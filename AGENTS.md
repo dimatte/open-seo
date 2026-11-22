@@ -75,6 +75,7 @@ This fork is deployed once for all of Nicolás Cerón's companies at https://ope
 | hyper.exposed       | `77bdde73-7a3f-4852-a6bb-d9f849f0c8af` |
 | hypers.dev          | `208061a5-f75c-4ea7-9640-87d465cd3c90` |
 | malvavisco.app      | `cc234885-1fd3-48d6-b6c9-e59bad2c5e7e` |
+| lodery.com          | `84475cf6-f5e9-4d25-8c7a-b62a4d022aa2` |
 | unpangram.com       | `92ac0513-7478-48a6-9880-e15e9942e32e` |
 | amediotonomusic.com | `75b408cd-0f70-4a5e-b388-ad92d87db017` |
 | gissimusic.com      | `d074c390-973d-4276-9c70-70e9f7b30555` |
