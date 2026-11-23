@@ -1,7 +1,6 @@
 import { build, type Plugin } from "vite";
 import react from "@vitejs/plugin-react";
 import tailwindcss from "@tailwindcss/vite";
-import tsconfigPaths from "vite-tsconfig-paths";
 
 const moduleId = "virtual:openseo-mcp-widget";
 const resolvedId = `\0${moduleId}`;
@@ -9,6 +8,7 @@ const resolvedId = `\0${moduleId}`;
 // A separate browser bundle keeps React and the app's actual UI components out
 // of the Worker runtime. The MCP resource serves the bundle and CSS inline, so
 // the sandbox needs no network access, session cookies, or asset allowlist.
+// Embed links serve the same document (src/server/features/embeds).
 export function mcpWidgets(): Plugin {
   return {
     name: "openseo-mcp-widgets",
@@ -29,16 +29,17 @@ async function buildWidget() {
     configFile: false,
     publicDir: false,
     logLevel: "warn",
-    plugins: [tsconfigPaths(), react(), tailwindcss()],
+    resolve: { tsconfigPaths: true },
+    plugins: [react(), tailwindcss()],
     // The enclosing dev server sets NODE_ENV=development. Keep this inline
     // build's JSX runtime consistent with its bundled production React.
-    esbuild: { jsxDev: false },
+    oxc: { jsx: { development: false } },
     define: { "process.env.NODE_ENV": JSON.stringify("production") },
     build: {
       write: false,
       cssCodeSplit: false,
       lib: {
-        entry: "src/client/mcp-widgets/main.tsx",
+        entry: "src/client/widgets/main.tsx",
         formats: ["iife"],
         name: "OpenSeoWidgets",
       },

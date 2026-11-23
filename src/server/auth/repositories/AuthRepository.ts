@@ -22,6 +22,7 @@ import {
   user as authUser,
   userSignupCampaigns,
 } from "@/db/schema";
+import type { DistanceUnit } from "@/shared/distance-unit";
 
 type DelegatedOrganizationInput = {
   id: string;
@@ -275,6 +276,11 @@ async function hasPendingInvitationForEmail(email: string) {
   return pending !== undefined;
 }
 
+async function hasAnyUser() {
+  const [first] = await db.select({ id: authUser.id }).from(authUser).limit(1);
+  return first !== undefined;
+}
+
 async function getLastActiveOrganizationId(userId: string) {
   const record = await db.query.user.findFirst({
     columns: { lastActiveOrganizationId: true },
@@ -306,6 +312,10 @@ async function isAnalyticsOptedOut(userId: string) {
 async function saveSignupCampaign(
   userId: string,
   campaign: {
+    entry: "mcp" | "app";
+    wasGuest: boolean;
+    agent: string | null;
+    utmMedium: string | null;
     utmSource: string | null;
     utmCampaign: string | null;
     utmContent: string | null;
@@ -336,6 +346,22 @@ async function setProductUpdatesOptIn(
     .where(eq(authUser.id, userId));
 }
 
+async function getDistanceUnit(userId: string) {
+  const [row] = await db
+    .select({ distanceUnit: authUser.distanceUnit })
+    .from(authUser)
+    .where(eq(authUser.id, userId))
+    .limit(1);
+  return row?.distanceUnit ?? null;
+}
+
+async function setDistanceUnit(userId: string, unit: DistanceUnit) {
+  await db
+    .update(authUser)
+    .set({ distanceUnit: unit })
+    .where(eq(authUser.id, userId));
+}
+
 export const AuthRepository = {
   upsertDelegatedOrganization,
   findFirstOrganizationIdForUser,
@@ -349,10 +375,13 @@ export const AuthRepository = {
   setLastActiveOrganization,
   setTermsAcceptance,
   setProductUpdatesOptIn,
+  getDistanceUnit,
+  setDistanceUnit,
   getHostedUser,
   getHostedUserNames,
   getOrganizationOwner,
   hasPendingInvitationForEmail,
+  hasAnyUser,
   isAnalyticsOptedOut,
   saveSignupCampaign,
 } as const;
