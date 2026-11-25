@@ -47,3 +47,6 @@ dist-sourcemaps/
 
 # built by `pnpm build:report-widgets` (predev/build)
 /src/public/report-widgets/
+
+# Local hygiene
+.cloudflare/
